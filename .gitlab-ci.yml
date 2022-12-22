@@ -1,0 +1,34 @@
+
+docker-build:
+  stage: build
+  image: 
+    name: docker:latest
+  only:
+    - master
+  services:
+    - docker:dind
+  variables:
+    DOCKER_REGISTRY: https://203068250499.dkr.ecr.eu-west-3.amazonaws.com
+    AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
+    AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
+    AWS_DEFAULT_REGION: 'eu-west-3'
+    AWS_PASSWORD : $AWS_PASSWORD
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: ""
+    APP_NAME: ecr_demo
+
+  before_script:
+    - apk add --no-cache curl jq python3 py3-pip
+    - pip install awscli
+    - docker login -u AWS -p eyJwYXlsb2FkIjoiRFVhUW1ZVXhPRHY1blA3djZMbzlHblJmbzRnaHRuM1NINDduMjJoeis5R0JpQUxnTjc2QUVkL0RGRklXZVU0RDhIQTZoSjkyMFpucUdGV3FMY2c4RUtWaGh4bVpOMWhGVVA4MExxaW1LRmhLYWZlTjBCM3hJbEtSM1p5SEt2Vm13eXVWWHB4aHY4TnlXTXVtakFyRlJsbkRrNnBnZ2daL1lOVFRya2JSbjBGYlVVQXBkSWFwQnd5K2RuNVVGTys3NWFQVjNFUklTNkFpOWNGcWVCRnJQZFhhOVdaQWZ4RENPMFMzWjZXbTdUTktLdnpPMzFXckpuM3VQRU1hS05qOVArWWlqL0RRY2JNUzFuT2tvemtFb2g5aDJZSWh2VEI0Nk1sK1dQYU9scTV0MWtheC9PTGlBR2p4dDZoWHFWam9QYTdDNFdBSFN0bnlIczZ2Z3YrcWRmd1VmRVVDQi9sa0kzT3hlU1d4bkVXdlBDSm5HbTRiMWpZa0c3T0gzSEhEYXVUaDM4SWpJVUVMWEhDaEcwaFdrejNHU3czbTNqdVBGQ0VWY0FsZHN2NHdKc1k1UUZLb3ZzTGxTUFFpWE00bWEvbnFLQThlOWY4TFBLTjFLZ24zSWNFWW5yWG1yM00rRUdDMk1PVXdsRlBoZEFCRHlHL1FzS0R3cGpCcEh5RlEvQ2V5emJTcVZyeVVHbEoxNlJPTE9yODN0cEk1ajNQNmtQbjNwR2g5QmJScXlTd1lqYUt4bXViRlpzZmJZVjBZZU5zTVNwanVtTytwVGMvckhQMDU5NUhtSkJ5RW8rY2NKbTA5d3g3U043TE9qMEFHMndCemdKbklSS2h5czZzV0lMMHFHaFdHa3YzN3o1ZkFjRWdycURSNFpVbW1uU2x2QkFBVE5LalVvbUdnTXFCTGQzV1lYSEY4Nk9pMXI0aU5YeGE0ZExXL3VRdnhRL0NrR2JBMUxRcWhwbGk1RGI3UXZyZkNFemhmOEdGTHFkN0hwNjFUTGFCNW8zWHgyYkhRako4VEo1Yk9Lc3BJTzlYODZlc3pnRXpTZFl6K3ArK0xYRzNCeGFSNlJtd3J2NGVNOW5ZYm13WEczTmlCQk83RHNleVY0MVJWRVRaV0VGOWIwN05YTEJURXR1b1cxYzZlZHdSYlRjSlZnMW5BdzQrVjg2UURIbStGMmlzdnVOUktwdjNOS3U4WitvemQ0Smh6ZnJtNDFrNzd4QmJwSVl2R3o2bWtsUGlqMG9Ta29tTlVKbUhTRDAwZ0xaMHZtOERqa2Q4YVkxNEJQb3NTd1FETFJ2YXBxZnBiS09xVVZlODNGOS83S3JrU1FSZmhseDJDNHFmYnc2SWt2dlM3dUZGVG5ha1VldVdQSTdyMVg4eVRCSExPVzBuczJRcEF2UktZUVE9PSIsImRhdGFrZXkiOiJBUUlCQUhpQkp0UVJNcER0QjVKdDdwaUFTaDRIOURzNFN3RWNVckkrR3k5cTJiZjlaQUZ0TnNCRUwwbzcxekh0MHdDRURmbi9BQUFBZmpCOEJna3Foa2lHOXcwQkJ3YWdiekJ0QWdFQU1HZ0dDU3FHU0liM0RRRUhBVEFlQmdsZ2hrZ0JaUU1FQVM0d0VRUU1OS2VMa0V5Vk93NWVoWW9CQWdFUWdEdVErOGdaYnNib1JBeXcyQ3h5OWp0d25KNDZXQzFiVGxUeHFOb2dvQk1tR3gzbUR1VXdYZDc5enNtRlpRMTFKUnFsVWtKRTlOS0czZFN2dFE9PSIsInZlcnNpb24iOiIyIiwidHlwZSI6IkRBVEFfS0VZIiwiZXhwaXJhdGlvbiI6MTY2OTQxODQ1NX0= https://203068250499.dkr.ecr.eu-west-3.amazonaws.com
+    - aws --version
+    - docker info
+    - docker --version
+
+  # Default branch leaves tag empty (= latest tag)
+  # All other branches are tagged with the escaped branch name (commit ref slug)
+  script:
+    - tag="203068250499.dkr.ecr.eu-west-3.amazonaws.com/ecr-demo:latest"
+    - docker build --pull -t "${tag}" .
+    - docker push "${tag}"
